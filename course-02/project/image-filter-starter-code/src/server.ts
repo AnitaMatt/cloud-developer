@@ -64,5 +64,5 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
     console.log(`press CTRL+C to stop server`);
   }); 
 })().catch(error =>{
-  express.response.status(501).send(`server down : ${error}`)
+  express.response.status(500).send(`server is down, please try again : ${error}`)
 });
