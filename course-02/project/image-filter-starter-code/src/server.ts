@@ -1,4 +1,4 @@
-require('dotenv').config();
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util';
@@ -29,11 +29,14 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-
+  function getStringValue (value: any): string{
+    return value.toString()
+  }
   //! END @TODO1
-  app.get("/filteredimage", async (req, res) => {
+  app.get("/filteredimage", async (req: express.Request, res: express.Response) => {
     try {
-      const { image_url } = req.query;
+      let {image_url}= req.query;
+      image_url = getStringValue(image_url)
       if (!image_url) {
         return res.status(404).json({ message: "image url is required" });
       }
@@ -45,12 +48,12 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
         deleteLocalFiles([imagePath]);
       });
     } catch (error) {
-      return res.status(422).send("ERROR: Image could not br downloaded, Try Again");
+      return res.status(422).send("ERROR: Image could not be downloaded, Try Again");
     }
   });
   // Root Endpoint
   // Displays a simple message to the user
-  app.get("/", async (req,  res) => {
+  app.get("/", async (req:express.Request,  res: express.Response) => {
     res.send("try GET /filteredimage?image_url={{}}")
   });
 
@@ -59,5 +62,7 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
   app.listen(port, () => {
     console.log(`server running http://localhost:${port}`);
     console.log(`press CTRL+C to stop server`);
-  });
-})();
+  }); 
+})().catch(error =>{
+  express.response.status(501).send(`server down : ${error}`)
+});
